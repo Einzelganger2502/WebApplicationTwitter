@@ -8,8 +8,10 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class CacheBeans {
+
+    //Initialising Cache to store UserModel
     @Bean
     public CacheTwitter<UserModel> twitterUserCache() {
-        return new CacheTwitter<UserModel>(5, TimeUnit.MINUTES);
+        return new CacheTwitter<UserModel>(TimeUnit.MINUTES,5);
     }
 }

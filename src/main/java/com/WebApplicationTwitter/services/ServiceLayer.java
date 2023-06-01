@@ -28,21 +28,21 @@ public class ServiceLayer {
     }
 
     //getting all followers
-    public List<UserModel> getAllUsers(){
+    public List<UserModel> getAll(){
         return userRepo.findAll();
     }
 
     //getting common followers
     public List<String> CommonFollowersfetch(String username1, String username2){
-        UserModel user1 = twitterUserCache.get(username1);
-        UserModel user2 = twitterUserCache.get(username2);
+        UserModel user1 = twitterUserCache.retrieve(username1);
+        UserModel user2 = twitterUserCache.retrieve(username2);
         if(user1 == null){
             user1 = this.getUser(username1);
-            twitterUserCache.add(username1, user1);
+            twitterUserCache.put(username1, user1);
         }
         if(user2 == null){
             user2 = this.getUser(username2);
-            twitterUserCache.add(username2, user2);
+            twitterUserCache.put(username2, user2);
         }
 
         List<String> commonFollowers = new ArrayList<String>();

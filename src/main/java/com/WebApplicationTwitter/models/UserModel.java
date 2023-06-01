@@ -16,8 +16,8 @@ public class UserModel {
         return name;
     }
 
-    public void setName(String username) {
-        this.name = username;
+    public void setUserName(String name) {
+        this.name = name;
     }
 
     public String getBio() {

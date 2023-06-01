@@ -9,22 +9,23 @@ import java.util.concurrent.TimeUnit;
 
 
 public class CacheTwitter<T> {
+    //String Key and Any generic value the cache can store
     private Cache<String, T> cacheObj;
 
     //Constructor to build Cache Store
-    public CacheTwitter(int expiryDuration, TimeUnit timeUnit) {
-        cacheObj = CacheBuilder.newBuilder().expireAfterWrite(expiryDuration, timeUnit).concurrencyLevel(Runtime.getRuntime().availableProcessors())
+    public CacheTwitter(TimeUnit time, int expiry){
+        cacheObj = CacheBuilder.newBuilder().expireAfterWrite(expiry, time).concurrencyLevel(Runtime.getRuntime().availableProcessors())
                 .build();
     }
 
-    public T get(String key) {
+    public void put(String key, T value) {
+        if(key != null && value != null) {
+            cacheObj.put(key, value);
+            // System.out.println("Record stored in " + value.getClass().getSimpleName() + " Cache with Key = " + key);
+        }
+    }
+    public T retrieve(String key) {
         return cacheObj.getIfPresent(key);
     }
 
-    public void add(String key, T value) {
-        if(key != null && value != null) {
-            cacheObj.put(key, value);
-           // System.out.println("Record stored in " + value.getClass().getSimpleName() + " Cache with Key = " + key);
-        }
-    }
 }
