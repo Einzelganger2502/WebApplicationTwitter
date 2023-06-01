@@ -12,18 +12,31 @@ public class UserModel {
     private String bio;
     private List<String> followers;
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
-    public void setName(String username) { this.name = username; }
+    public void setName(String username) {
+        this.name = username;
+    }
 
-    public String getBio() { return bio; }
+    public String getBio() {
+        return bio;
+    }
 
-    public void setBio(String bio) { this.bio = bio; }
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
 
-    public List<String> getfollowers() { return followers; }
+    public List<String> getfollowers() {
+        return followers;
+    }
 
-    public void setfollowers(List<String> followers) { this.followers = followers; }
+//    public void setfollowers(List<String> followers) {
+//        this.followers = followers;
+//    }
 
+    //Constructor parameterized
     public UserModel(String name, String bio, List<String> followers) {
         this.name = name;
         this.bio = bio;

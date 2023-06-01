@@ -22,15 +22,18 @@ public class ServiceLayer {
     @Autowired
     private CacheTwitter<UserModel> twitterUserCache;
 
-    public List<UserModel> getAllUsers(){
-        return userRepo.findAll();
-    }
-
+    //getting a single user
     public UserModel getUser(String username){
         return userRepo.findByname(username);
     }
 
-    public List<String> getCommonFollowers(String username1, String username2){
+    //getting all followers
+    public List<UserModel> getAllUsers(){
+        return userRepo.findAll();
+    }
+
+    //getting common followers
+    public List<String> CommonFollowersfetch(String username1, String username2){
         UserModel user1 = twitterUserCache.get(username1);
         UserModel user2 = twitterUserCache.get(username2);
         if(user1 == null){
@@ -46,10 +49,10 @@ public class ServiceLayer {
         if(user1 == null || user2 == null) return commonFollowers;
 
         List<String>followers2 = user2.getfollowers();
-        Set<String> potential = new HashSet<String>(user1.getfollowers());
+        Set<String> commons = new HashSet<String>(user1.getfollowers());
 
         for(String follower : followers2){
-            if(potential.contains(follower)){
+            if(commons.contains(follower)){
                 commonFollowers.add(follower);
             }
         }

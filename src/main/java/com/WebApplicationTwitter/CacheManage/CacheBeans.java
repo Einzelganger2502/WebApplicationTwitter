@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-public class CacheStoreBeans {
+public class CacheBeans {
     @Bean
     public CacheTwitter<UserModel> twitterUserCache() {
         return new CacheTwitter<UserModel>(5, TimeUnit.MINUTES);

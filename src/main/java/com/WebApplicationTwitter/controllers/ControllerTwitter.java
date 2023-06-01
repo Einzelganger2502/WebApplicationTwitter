@@ -15,37 +15,43 @@ public class ControllerTwitter {
     private ServiceLayer serviceLayer;
 
     @Autowired
-    private CacheTwitter<UserModel> twitterUserCache;
+    private CacheTwitter<UserModel> userCache;
 
     @GetMapping("/")
     public List<UserModel> getAllUsers(){
         return serviceLayer.getAllUsers();
     }
 
-//    @GetMapping("/users/getFollowers/{userId}")
-//    public List<String> getFollowers(@PathVariable String userId){
-//        UserModel userModel =
-//    }
+    @GetMapping("/users/getFollowers/{userId}")
+    public List<String> getFollowers(@PathVariable String userId){
+        UserModel user1 = userCache.get(userId);
+        if(user1 == null){
+            user1 = this.getUser(userId);
+            userCache.add(userId, user1);
+        }
+        List<String> followers = user1.getfollowers();
+        return followers;
+    }
 
 
     @GetMapping("/users/{userId}")
     public UserModel getUser(@PathVariable String userId){
-        UserModel cachedUserRecord = twitterUserCache.get(userId);
-        if(cachedUserRecord != null) {
-            System.out.println("User record found in cache : " + cachedUserRecord.getName());
-            return cachedUserRecord;
+        UserModel FetchedFromCache = userCache.get(userId);
+        if(FetchedFromCache != null) {
+            System.out.println("User record found in cache : " + FetchedFromCache.getName());
+            return FetchedFromCache;
         }
 
-        UserModel userRecordFromDB = serviceLayer.getUser(userId);
-        if(userRecordFromDB != null){
-            twitterUserCache.add(userId, userRecordFromDB);
+        UserModel FetchedFromDB = serviceLayer.getUser(userId);
+        if(FetchedFromDB != null){
+            userCache.add(userId, FetchedFromDB);
         }
-        return userRecordFromDB;
+        return FetchedFromDB;
     }
     @PostMapping("/users/save")
     public List<UserModel> storeUser(@RequestBody UserModel userModel){
         serviceLayer.storeUser(userModel);
-        twitterUserCache.add(userModel.getName(), userModel);
+        userCache.add(userModel.getName(), userModel);
         return serviceLayer.getAllUsers();
     }
 
@@ -53,6 +59,6 @@ public class ControllerTwitter {
 
     @GetMapping("/users")
     public List<String> getCommonFollowers(@RequestParam("user1") String username1, @RequestParam("user2") String username2){
-        return serviceLayer.getCommonFollowers(username1, username2);
+        return serviceLayer.CommonFollowersfetch(username1, username2);
     }
 }
