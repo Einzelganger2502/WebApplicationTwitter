@@ -1,21 +1,33 @@
 package com.WebApplicationTwitter.services;
 
 
+import co.elastic.clients.elasticsearch._types.query_dsl.*;
+import co.elastic.clients.json.JsonData;
+import com.WebApplicationTwitter.CacheManage.CacheTwitter;
+import com.WebApplicationTwitter.models.ElasticSearchModel;
+import com.WebApplicationTwitter.models.UserModel;
+import com.WebApplicationTwitter.repositories.ElasticSearchRepo;
 import com.WebApplicationTwitter.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
 import org.springframework.stereotype.Service;
-import com.WebApplicationTwitter.CacheManage.CacheTwitter;
-import com.WebApplicationTwitter.models.UserModel;
-
-
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Date;
+
 
 @Service
 public class ServiceLayer {
+
+    @Autowired
+    public ElasticsearchOperations elasticsearchOperations;
     @Autowired
     private UserRepo userRepo;
 
@@ -59,6 +71,61 @@ public class ServiceLayer {
         return commonFollowers;
     }
 
+    //Various search functionalities to search tweets
+
+    //Searching tweets by username
+    public List<String> SearchByUserName(String username){
+        Query Match = MatchQuery.of(m -> m.field("username").query(username))._toQuery();
+
+        NativeQuery nativeQuery = NativeQuery.builder()
+                .withSourceFilter(new FetchSourceFilterBuilder().withIncludes().build())
+                .withQuery(Match)
+                .withSort(Sort.by(Sort.Direction.ASC, "createdTime"))
+                .build();
+
+        List<String> results = new ArrayList<>();
+        SearchHits<ElasticSearchModel> searchHits = elasticsearchOperations.search(nativeQuery, ElasticSearchModel.class);
+        searchHits.forEach(searchHit ->  results.add(searchHit.getContent().getMessage()));
+        return results;
+    }
+    //Searching Tweets by Keywords
+    public List<String> SearchByKeyword(String query){
+        Query multimatchquery = MatchQuery.of(m -> m.field("message").field("hashtag").query(query))._toQuery();
+
+        NativeQuery nativeQuery = NativeQuery.builder()
+                .withSourceFilter(new FetchSourceFilterBuilder().withIncludes().build())
+                .withQuery(multimatchquery)
+                .withSort(Sort.by(Sort.Direction.ASC, "createdTime"))
+                .build();
+
+        List<String> results = new ArrayList<>();
+        SearchHits<ElasticSearchModel> searchHits = elasticsearchOperations.search(nativeQuery, ElasticSearchModel.class);
+        searchHits.forEach(searchHit ->  results.add(searchHit.getContent().getMessage()));
+        return results;
+    }
+
+    //Search Tweets within s given time range having a particular keyword
+    public List<String> SearchByTime(Date StartDate, Date EndDate, String keyword){
+        Query matchPhraseQuery = MatchPhraseQuery.of(m -> m.field("message").query(keyword))._toQuery();
+        Query rangeQuery = RangeQuery.of(r -> r.field("createdTime")
+                .gte((JsonData) StartDate)
+                .lte((JsonData) EndDate))._toQuery();
+
+        Query boolQuery = BoolQuery.of(b -> b
+                .must(matchPhraseQuery)
+                .filter(rangeQuery))._toQuery();
+
+        NativeQuery nativeQuery = NativeQuery.builder()
+                .withSourceFilter(new FetchSourceFilterBuilder().withIncludes().build())
+                .withQuery(boolQuery)
+                .withSort(Sort.by(Sort.Direction.ASC, "createdTime"))
+                .build();
+
+        List<String> results = new ArrayList<>();
+        SearchHits<ElasticSearchModel> searchHits = elasticsearchOperations.search(nativeQuery, ElasticSearchModel.class);
+        searchHits.forEach(searchHit ->  results.add(searchHit.getContent().getMessage()));
+        return results;
+    }
     public void storeUser(UserModel userModel){
         userRepo.save(userModel);
     }
