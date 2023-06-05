@@ -16,7 +16,6 @@ public class ElasticSearchModel {
 
     @Field(type = FieldType.Date)
     private String createdTime;
-
     @Field(type = FieldType.Text)
     private List<String> hashTag;
 
