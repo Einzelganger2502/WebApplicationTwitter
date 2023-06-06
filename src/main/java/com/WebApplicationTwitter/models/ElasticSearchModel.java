@@ -18,7 +18,7 @@ public class ElasticSearchModel {
     private String message;
 
     @Field(type = FieldType.Date)
-    private Date createdTime;
+    private String createdTime;
     @Field(type = FieldType.Text)
     private List<String> hashTag;
 
@@ -44,11 +44,11 @@ public class ElasticSearchModel {
     public void setTweetId(long tweetId) {
         this.tweetId = tweetId;
     }
-    public Date getCreatedTime() {
+    public String getCreatedTime() {
         return createdTime;
     }
 
-    public void setCreatedTime(Date createdTime) {
+    public void setCreatedTime(String createdTime) {
         this.createdTime = createdTime;
     }
     public String getMessage() {
