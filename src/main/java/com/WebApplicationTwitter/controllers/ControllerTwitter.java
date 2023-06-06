@@ -94,8 +94,8 @@ public class ControllerTwitter {
     }
 
     @GetMapping("/tweets/user")
-    public List<String> SearchByUserName(@RequestParam("username") String username){
-        System.out.print(username);
-        return serviceLayer.SearchByUserName(username);
+    public List<String> SearchByUserName(@RequestParam("userId") String userId){
+//        System.out.print(username);
+        return serviceLayer.SearchByUserName(userId);
     }
 }
