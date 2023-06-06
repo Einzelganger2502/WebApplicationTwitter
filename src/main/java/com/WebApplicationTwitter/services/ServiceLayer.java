@@ -16,12 +16,7 @@ import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Date;
-
+import java.util.*;
 
 @Service
 public class ServiceLayer {
@@ -73,9 +68,9 @@ public class ServiceLayer {
 
     //Various search functionalities to search tweets
 
-    //Searching tweets by username
-    public List<String> SearchByUserName(String username){
-        Query Match = MatchQuery.of(m -> m.field("username").query(username))._toQuery();
+    //Searching tweets by userId
+    public List<String> SearchByUserName(String userId){
+        Query Match = MatchQuery.of(m -> m.field("userId").query(userId))._toQuery();
 
         NativeQuery nativeQuery = NativeQuery.builder()
                 .withSourceFilter(new FetchSourceFilterBuilder().withIncludes().build())
@@ -90,7 +85,7 @@ public class ServiceLayer {
     }
     //Searching Tweets by Keywords
     public List<String> SearchByKeyword(String query){
-        Query multimatchquery = MatchQuery.of(m -> m.field("message").field("hashtag").query(query))._toQuery();
+        Query multimatchquery = MatchQuery.of(m -> m.field("message").field("hashTag").query(query))._toQuery();
 
         NativeQuery nativeQuery = NativeQuery.builder()
                 .withSourceFilter(new FetchSourceFilterBuilder().withIncludes().build())
