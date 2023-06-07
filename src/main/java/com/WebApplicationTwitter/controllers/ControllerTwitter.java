@@ -5,8 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.WebApplicationTwitter.models.UserModel;
 import com.WebApplicationTwitter.services.ServiceLayer;
+import com.WebApplicationTwitter.models.ElasticSearchModel;
+
 
 import java.util.List;
+import java.util.Date;
 
 @RestController
 @RequestMapping("/twitter")
@@ -77,5 +80,22 @@ public class ControllerTwitter {
     @GetMapping("/users")
     public List<String> getCommonFollowers(@RequestParam("user1") String username1, @RequestParam("user2") String username2){
         return serviceLayer.CommonFollowersfetch(username1, username2);
+    }
+
+
+    @GetMapping("/tweets/Range")
+    public List<String> SearchByTime(@RequestParam("start") String StartDate, @RequestParam("end") String EndDate, @RequestParam("keyword") String keyword){
+        return serviceLayer.SearchByTime(StartDate,EndDate, keyword);
+    }
+
+    @GetMapping("/tweets/keyword")
+    public List<String> SearchByKeyword(@RequestParam("query") String query) {
+        return serviceLayer.SearchByKeyword(query);
+    }
+
+    @GetMapping("/tweets/user")
+    public List<String> SearchByUserName(@RequestParam("userId") String userId){
+//        System.out.print(username);
+        return serviceLayer.SearchByUserName(userId);
     }
 }
