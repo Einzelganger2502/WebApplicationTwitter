@@ -100,11 +100,15 @@ public class ServiceLayer {
     }
 
     //Search Tweets within s given time range having a particular keyword
-    public List<String> SearchByTime(Date StartDate, Date EndDate, String keyword){
+    public List<String> SearchByTime(String StartDate, String EndDate, String keyword){
         Query matchPhraseQuery = MatchPhraseQuery.of(m -> m.field("message").query(keyword))._toQuery();
-        Query rangeQuery = RangeQuery.of(r -> r.field("createdTime")
-                .gte((JsonData) StartDate)
-                .lte((JsonData) EndDate))._toQuery();
+//        Query rangeQuery = RangeQuery.of(r -> r.field("createdTime")
+//                .gte(JsonData.fromJson(StartDate))
+//                .lte((JsonData.fromJson(EndDate)))._toQuery();
+        Query rangeQuery = RangeQuery.of(r -> r
+                .field("createdTime")
+                .gte(JsonData.fromJson(StartDate))
+                .lte(JsonData.fromJson(EndDate)))._toQuery();
 
         Query boolQuery = BoolQuery.of(b -> b
                 .must(matchPhraseQuery)

@@ -84,7 +84,7 @@ public class ControllerTwitter {
 
 
     @GetMapping("/tweets/Range")
-    public List<String> SearchByTime(@RequestParam("start") Date StartDate, @RequestParam("end") Date EndDate, @RequestParam("keyword") String keyword){
+    public List<String> SearchByTime(@RequestParam("start") String StartDate, @RequestParam("end") String EndDate, @RequestParam("keyword") String keyword){
         return serviceLayer.SearchByTime(StartDate,EndDate, keyword);
     }
 

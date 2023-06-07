@@ -8,7 +8,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import java.util.*;
 
 
-@Document(indexName = "index_for_tweets")
+@Document(indexName = "tweets_index")
 public class ElasticSearchModel {
     @Id
     @Field(type = FieldType.Long)
